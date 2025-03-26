@@ -19,7 +19,24 @@ export default function Projects() {
   }
 
   const projects = [
-    
+    {
+      title: "College Management System",
+      description:
+        "Developed a comprehensive system for managing college operations including student registration for DII faculty, result preparation, and teacher management.",
+      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=60",
+      stack: ["Java", "MySQL", "Swing", "JDBC"],
+      github: "https://github.com/sujan-0/CollegeManagementSystem",
+      demo: "https://github.com/sujan-0",
+    },
+    {
+      title: "Citizen Grievance Application & Tracking System",
+      description:
+        "Built a platform for local governments to efficiently track and manage day-to-day citizen grievances.",
+      image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&auto=format&fit=crop&q=60",
+      stack: ["MongoDB", "Express.js", "React.js", "Node.js"],
+      github: "https://github.com/sujan-0/CitizenGrievanceApplication",
+      demo: "https://github.com/sujan-0",
+    },
     {
       title: "Pet Adoption System",
       description: "Designed backend APIs for a pet adoption system, ensuring security and scalability.",
@@ -33,14 +50,6 @@ export default function Projects() {
       description: "Created a dynamic weather application fetching real-time data using APIs.",
       image: "https://images.unsplash.com/photo-1592210454359-9043f067919b?w=800&auto=format&fit=crop&q=60",
       stack: ["HTML", "CSS", "JavaScript", "PHP"],
-      github: "https://github.com/sujan-0",
-      demo: "https://github.com/sujan-0",
-    },
-    {
-      title: "Ecommerce UI",
-      description: "Developed a sleek and responsive UI for an ecommerce platform.",
-      image: "https://images.unsplash.com/photo-1557821552-17105176677c?w=800&auto=format&fit=crop&q=60",
-      stack: ["HTML", "CSS"],
       github: "https://github.com/sujan-0",
       demo: "https://github.com/sujan-0",
     },
