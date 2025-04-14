@@ -173,7 +173,7 @@ export default function Contact() {
                   </div>
 
                   <div className="text-xs text-muted-foreground mb-2">
-                    Your message will be sent directly to Sujan's email inbox.
+                    Your message will be sent directly to Sujan.
                   </div>
 
                   <Button
