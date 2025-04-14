@@ -4,8 +4,9 @@ import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ExternalLink, Github } from "lucide-react"
+import { ExternalLink, Github, Info } from "lucide-react"
 import Image from "next/image"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 export default function Projects() {
   const [ref, inView] = useInView({
@@ -72,6 +73,25 @@ export default function Projects() {
         <p className="section-subtitle">A showcase of my recent work and the technologies I've implemented.</p>
       </motion.div>
 
+      <motion.div
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+        variants={fadeIn}
+        transition={{ duration: 0.5 }}
+        className="mb-12"
+      >
+        <Alert className="bg-primary/10 border-primary/20">
+          <Info className="h-5 w-5 text-primary" />
+          <AlertTitle className="text-lg font-semibold mb-2">Project Demos & Access</AlertTitle>
+          <AlertDescription className="text-foreground/80">
+            📽️ Some of my major projects are currently in private repositories due to university policies,
+            collaborations, or deployment constraints. If you're interested in a demo or want to access these projects,
+            feel free to reach out using the contact details below. I'm happy to provide access or walk you through a
+            project if it's for collaboration, hiring, or learning purposes.
+          </AlertDescription>
+        </Alert>
+      </motion.div>
+
       <div className="grid md:grid-cols-2 gap-8">
         {projects.map((project, index) => (
           <motion.div
@@ -125,4 +145,3 @@ export default function Projects() {
     </section>
   )
 }
-
