@@ -1,39 +1,109 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { useInView } from "react-intersection-observer"
-import { Card, CardContent } from "@/components/ui/card"
-import { Github, Linkedin, Mail, MapPin, MessageSquare } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { useActionState } from "react"
-import { submitContactForm, type ContactFormState } from "@/app/actions/contact-form"
-import { useEffect } from "react"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import Image from "next/image"
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import { Card, CardContent } from "@/components/ui/card";
+import { Github, Linkedin, Mail, MapPin, MessageSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useState, useEffect } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import Image from "next/image";
+import { z } from "zod";
+
+// Form validation schema
+const formSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  message: z.string().min(10, { message: "Message must be at least 10 characters" }),
+});
+
+type ContactFormState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
+    message?: string[];
+    _form?: string[];
+  };
+  success?: boolean;
+};
 
 export default function Contact() {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
-  })
+  });
 
-  const initialState: ContactFormState = {}
-  const [state, formAction, isPending] = useActionState(submitContactForm, initialState)
+  const [state, setState] = useState<ContactFormState>({});
+  const [isPending, setIsPending] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsPending(true);
+    setState({});
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      message: formData.get("message") as string,
+    };
+
+    // Validate form data
+    const validatedFields = formSchema.safeParse(data);
+
+    if (!validatedFields.success) {
+      setState({
+        errors: validatedFields.error.flatten().fieldErrors,
+        success: false,
+      });
+      setIsPending(false);
+      e.currentTarget.reset(); // Prevent form submission
+      return;
+    }
+
+    // If validation passes, allow the form to submit natively to Formspree
+    try {
+      e.currentTarget.submit(); // Trigger native form submission
+    } catch (error) {
+      console.error("Form submission error:", error);
+      setState({
+        errors: { _form: ["Failed to send message. Please try again later."] },
+        success: false,
+      });
+      setIsPending(false);
+    }
+  };
 
   useEffect(() => {
-    if (state.success) {
-      const form = document.getElementById("contact-form") as HTMLFormElement
-      if (form) form.reset()
+    // Check URL for Formspree success (e.g., after redirect)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("form") === "success") {
+      setState({ success: true });
+      setIsPending(false);
+      // Clear URL params
+      window.history.replaceState({}, document.title, window.location.pathname + "#contact");
+    } else if (urlParams.get("form") === "error") {
+      setState({
+        errors: { _form: ["Failed to send message. Please try again later."] },
+        success: false,
+      });
+      setIsPending(false);
+      window.history.replaceState({}, document.title, window.location.pathname + "#contact");
     }
-  }, [state])
+
+    if (state.success) {
+      const timer = setTimeout(() => setState({}), 5000); // Clear success message after 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [state]);
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
-  }
+  };
 
   const contactInfo = [
     {
@@ -58,18 +128,15 @@ export default function Contact() {
       icon: <Linkedin className="h-5 w-5 text-blue-500" />,
       title: "LinkedIn",
       value: "linkedin.com/in/sujankhatiwoda",
-      link: "https://linkedin.com",
+      link: "https://linkedin.com/in/sujankhatiwoda",
     },
-  ]
+  ];
 
   return (
     <section id="contact" className="section-padding py-24 relative overflow-hidden">
-      {/* Background pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0 bg-grid-pattern"></div>
       </div>
-
-      {/* Decorative elements */}
       <div className="absolute top-20 left-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-20 right-10 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
 
@@ -91,7 +158,6 @@ export default function Contact() {
       </motion.div>
 
       <div className="grid lg:grid-cols-3 gap-8 relative z-10">
-        {/* Left column - Contact form */}
         <motion.div
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -115,19 +181,23 @@ export default function Contact() {
               {state.success && (
                 <Alert className="mb-6 bg-green-50 text-green-800 dark:bg-green-950 dark:text-green-300 border-green-200">
                   <AlertDescription>
-                    Thank you for your message! Your email has been sent directly to Sujan and he'll get back to you
-                    soon.
+                    Thank you for your message! It has been sent successfully.
                   </AlertDescription>
                 </Alert>
               )}
-
               {state.errors?._form && (
                 <Alert className="mb-6 bg-red-50 text-red-800 dark:bg-red-950 dark:text-red-300 border-red-200">
                   <AlertDescription>{state.errors._form}</AlertDescription>
                 </Alert>
               )}
-
-              <form id="contact-form" action={formAction}>
+              <form
+                id="contact-form"
+                action="https://formspree.io/f/xeoadqgg"
+                method="POST"
+                onSubmit={handleSubmit}
+              >
+                <input type="hidden" name="_next" value="https://sujankhatiwoda.com.np/#contact?form=success" />
+                <input type="hidden" name="_error" value="https://sujankhatiwoda.com.np/#contact?form=error" />
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-sm font-medium">
@@ -142,7 +212,6 @@ export default function Contact() {
                     />
                     {state.errors?.name && <p className="text-sm text-red-500">{state.errors.name[0]}</p>}
                   </div>
-
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-medium">
                       Email
@@ -157,7 +226,6 @@ export default function Contact() {
                     />
                     {state.errors?.email && <p className="text-sm text-red-500">{state.errors.email[0]}</p>}
                   </div>
-
                   <div className="space-y-2">
                     <Label htmlFor="message" className="text-sm font-medium">
                       Message
@@ -171,11 +239,9 @@ export default function Contact() {
                     />
                     {state.errors?.message && <p className="text-sm text-red-500">{state.errors.message[0]}</p>}
                   </div>
-
                   <div className="text-xs text-muted-foreground mb-2">
                     Your message will be sent directly to Sujan.
                   </div>
-
                   <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 transition-all"
@@ -188,8 +254,6 @@ export default function Contact() {
             </CardContent>
           </Card>
         </motion.div>
-
-        {/* Middle column - Contact image */}
         <motion.div
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -209,14 +273,12 @@ export default function Contact() {
                 <MessageSquare className="h-10 w-10 text-blue-500 mb-4" />
                 <h3 className="text-xl font-bold mb-2">Let's Connect</h3>
                 <p className="text-muted-foreground">
-                  I'm always open to discussing new projects, creative ideas or opportunities to be part of your vision.
+                  I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
                 </p>
               </div>
             </div>
           </div>
         </motion.div>
-
-        {/* Right column - Contact info */}
         <motion.div
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -256,7 +318,6 @@ export default function Contact() {
                   </a>
                 ))}
               </div>
-
               <div className="mt-8 text-center">
                 <p className="text-muted-foreground">Prefer connecting on social media?</p>
                 <div className="flex justify-center mt-4 space-x-4">
@@ -269,7 +330,7 @@ export default function Contact() {
                     <Github className="h-6 w-6 text-blue-500 group-hover:text-blue-600" />
                   </a>
                   <a
-                    href="https://linkedin.com"
+                    href="https://linkedin.com/in/sujankhatiwoda"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3 rounded-full bg-secondary/50 hover:bg-primary/10 transition-colors group"
@@ -289,5 +350,5 @@ export default function Contact() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }
