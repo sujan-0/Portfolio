@@ -24,7 +24,7 @@ export default function Projects() {
       title: "College Management System",
       description:
         "Developed a comprehensive system for managing college operations including student registration for DII faculty, result preparation, and teacher management.",
-      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=60",
+      image: "https://images.unsplash.com/photo-1544396821-4dd40b938ad3?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // New similar image
       stack: ["Java", "MySQL", "Swing", "JDBC"],
       github: "https://github.com/sujan-0/CollegeManagementSystem",
       demo: "https://github.com/sujan-0",
