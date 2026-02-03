@@ -2,11 +2,9 @@
 
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { ExternalLink, Github, Info } from "lucide-react"
 import Image from "next/image"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
 
 export default function Projects() {
   const [ref, inView] = useInView({
@@ -24,7 +22,7 @@ export default function Projects() {
       title: "College Management System",
       description:
         "Developed a comprehensive system for managing college operations including student registration for DII faculty, result preparation, and teacher management.",
-      image: "https://images.unsplash.com/photo-1544396821-4dd40b938ad3?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // New similar image
+      image: "https://images.unsplash.com/photo-1544396821-4dd40b938ad3?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       stack: ["Java", "MySQL", "Swing", "JDBC"],
       github: "https://github.com/sujan-0/CollegeManagementSystem",
       demo: "https://github.com/sujan-0",
@@ -57,7 +55,7 @@ export default function Projects() {
   ]
 
   return (
-    <section id="projects" className="section-padding py-24 bg-secondary/30">
+    <section id="projects" className="py-24 px-4 md:px-8 max-w-7xl mx-auto">
       <motion.div
         ref={ref}
         initial="hidden"
@@ -66,11 +64,11 @@ export default function Projects() {
         transition={{ duration: 0.5 }}
         className="text-center mb-16"
       >
-        <h2 className="section-title">
-          My <span className="gradient-text">Projects</span>
+        <h2 className="text-3xl md:text-5xl font-bold font-poppins mb-6 text-white text-shadow-glow">
+          My <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Projects</span>
         </h2>
-        <div className="divider"></div>
-        <p className="section-subtitle">A showcase of my recent work and the technologies I've implemented.</p>
+        <div className="h-1 w-24 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mb-8"></div>
+        <p className="text-lg text-gray-300 max-w-3xl mx-auto">A showcase of my recent work and the technologies I've implemented.</p>
       </motion.div>
 
       <motion.div
@@ -80,16 +78,18 @@ export default function Projects() {
         transition={{ duration: 0.5 }}
         className="mb-12"
       >
-        <Alert className="bg-primary/10 border-primary/20">
-          <Info className="h-5 w-5 text-primary" />
-          <AlertTitle className="text-lg font-semibold mb-2">Project Demos & Access</AlertTitle>
-          <AlertDescription className="text-foreground/80">
-            📽️ Some of my major projects are currently in private repositories due to university policies,
-            collaborations, or deployment constraints. If you're interested in a demo or want to access these projects,
-            feel free to reach out using the contact details below. I'm happy to provide access or walk you through a
-            project if it's for collaboration, hiring, or learning purposes.
-          </AlertDescription>
-        </Alert>
+        <div className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl flex items-start gap-3 backdrop-blur-sm">
+          <Info className="h-5 w-5 text-blue-400 shrink-0 mt-0.5" />
+          <div>
+            <h4 className="text-lg font-semibold mb-1 text-white">Project Demos & Access</h4>
+            <p className="text-gray-300">
+              📽️ Some of my major projects are currently in private repositories due to university policies,
+              collaborations, or deployment constraints. If you're interested in a demo or want to access these projects,
+              feel free to reach out using the contact details below. I'm happy to provide access or walk you through a
+              project if it's for collaboration, hiring, or learning purposes.
+            </p>
+          </div>
+        </div>
       </motion.div>
 
       <div className="grid md:grid-cols-2 gap-8">
@@ -101,44 +101,43 @@ export default function Projects() {
             variants={fadeIn}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <Card className="overflow-hidden card-hover h-full flex flex-col">
-              <div className="relative h-48 w-full overflow-hidden">
+            <div className="overflow-hidden h-full flex flex-col rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm hover:shadow-[0_0_30px_rgba(37,99,235,0.15)] transition-all duration-300 group">
+              <div className="relative h-56 w-full overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
                 <Image
                   src={project.image || "/placeholder.svg"}
                   alt={project.title}
                   fill
-                  className="object-cover transition-transform duration-500 hover:scale-105"
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
               </div>
-              <CardHeader>
-                <CardTitle>{project.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-muted-foreground mb-4">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mt-2">
+              <div className="p-6 flex-grow flex flex-col">
+                <h3 className="text-2xl font-bold mb-3 text-white">{project.title}</h3>
+                <p className="text-gray-400 mb-6 flex-grow">{project.description}</p>
+                <div className="flex flex-wrap gap-2 mb-6">
                   {project.stack.map((tech, i) => (
                     <span
                       key={i}
-                      className="px-2 py-1 bg-secondary text-secondary-foreground rounded text-xs font-medium"
+                      className="px-2.5 py-1 bg-white/5 border border-white/5 text-blue-300 rounded-md text-xs font-medium"
                     >
                       {tech}
                     </span>
                   ))}
                 </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button asChild variant="outline" size="sm">
-                  <a href={project.github} target="_blank" rel="noopener noreferrer">
-                    <Github className="mr-2 h-4 w-4" /> Code
-                  </a>
-                </Button>
-                <Button asChild size="sm">
-                  <a href={project.demo} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="mr-2 h-4 w-4" /> Live Demo
-                  </a>
-                </Button>
-              </CardFooter>
-            </Card>
+                <div className="flex gap-4 mt-auto">
+                  <Button asChild size="sm" variant="outline" className="flex-1 bg-transparent border-white/20 text-white hover:bg-white/10 hover:text-white">
+                    <a href={project.github} target="_blank" rel="noopener noreferrer">
+                      <Github className="mr-2 h-4 w-4" /> Code
+                    </a>
+                  </Button>
+                  <Button asChild size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white border-none">
+                    <a href={project.demo} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="mr-2 h-4 w-4" /> Live Demo
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </div>
           </motion.div>
         ))}
       </div>
